@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1a3a0a">
+<title>Малафо — скот Кыргызстана</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800;900&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --g1: #1a3a0a;
+    --g2: #2d6016;
+    --g3: #3d8020;
+    --g4: #56a832;
+    --g5: #7dc455;
+    --g6: #a8df80;
+    --g-light: #e8f5d8;
+    --amber: #c47a10;
+    --amber-light: #fde8b0;
+    --amber-mid: #f0a820;
+    --red: #c0392b;
+    --red-light: #fdecea;
+    --cream: #f7f3ec;
+    --warm-white: #fdfaf5;
+    --dark: #1c1a14;
+    --mid: #5a5448;
+    --muted: #9a9080;
+    --border: rgba(0,0,0,0.08);
+    --border-strong: rgba(0,0,0,0.14);
+    --shadow: 0 2px 12px rgba(0,0,0,0.1);
+    --shadow-strong: 0 8px 32px rgba(0,0,0,0.18);
+    --font-display: 'Unbounded', sans-serif;
+    --font-body: 'Nunito', sans-serif;
+    --r: 14px;
+    --r-sm: 8px;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: #1a1a1a;
+    display: flex; justify-content: center;
+    font-family: var(--font-body);
+    overflow: hidden;
+  }
+
+  #app {
+    width: 100%;
+    max-width: 430px;
+    height: 100%;
+    max-height: 100dvh;
+    background: var(--cream);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── SCREENS ── */
+  .screen {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
+    will-change: transform;
+    background: var(--cream);
+  }
+  .screen.active { transform: translateX(0); }
+  .screen.left { transform: translateX(-30%); }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--g1);
+    padding: 52px 16px 14px;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute; top: -40px; right: -30px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .header::after {
+    content: '';
+    position: absolute; top: 10px; right: 40px;
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.03);
+  }
+
+  .logo-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .logo {
+    font-family: var(--font-display);
+    font-size: 22px; font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.5px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .logo-icon {
+    width: 34px; height: 34px;
+    background: var(--amber-mid);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .header-btns { display: flex; gap: 8px; }
+  .header-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    transition: background 0.15s;
+  }
+  .header-btn:active { background: rgba(255,255,255,0.2); }
+
+  .search-bar {
+    background: rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+  }
+  .search-bar span { color: rgba(255,255,255,0.5); font-size: 13px; }
+
+  /* ── FILTER TABS ── */
+  .filter-bar {
+    background: var(--g1);
+    padding: 0 16px 14px;
+    display: flex; gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-shrink: 0;
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .ftab {
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 13px; font-weight: 700;
+    white-space: nowrap; cursor: pointer;
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.6);
+    border: none;
+    font-family: var(--font-body);
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .ftab.active {
+    background: var(--amber-mid);
+    color: #1a1a00;
+  }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: flex; gap: 10px;
+    padding: 14px 16px 8px;
+    flex-shrink: 0;
+  }
+  .stat-pill {
+    flex: 1;
+    background: var(--warm-white);
+    border-radius: 10px;
+    padding: 8px 10px;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+  .stat-pill .val {
+    font-family: var(--font-display);
+    font-size: 15px; font-weight: 800;
+    color: var(--g2);
+    line-height: 1;
+  }
+  .stat-pill .lbl {
+    font-size: 10px; color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* ── LISTINGS ── */
+  .listings {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 16px 80px;
+    display: flex; flex-direction: column; gap: 10px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .listings::-webkit-scrollbar { display: none; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--warm-white);
+    border-radius: var(--r);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+    display: flex;
+  }
+  .card:active { transform: scale(0.985); }
+  .card-img {
+    width: 120px;
+    flex-shrink: 0;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    background: #e4edd8;
+  }
+  .card-img .ai-badge {
+    position: absolute; bottom: 6px; left: 6px;
+    background: var(--g2);
+    color: #fff;
+    font-size: 9px; font-weight: 700;
+    padding: 3px 7px; border-radius: 8px;
+    letter-spacing: 0.2px;
+  }
+  .card-body {
+    flex: 1; padding: 11px 13px;
+    min-width: 0; display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .card-title {
+    font-size: 14px; font-weight: 800;
+    color: var(--dark);
+    margin-bottom: 2px;
+    font-family: var(--font-body);
+  }
+  .card-sub {
+    font-size: 11px; color: var(--muted); margin-bottom: 6px;
+  }
+  .tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 6px; }
+  .tag {
+    font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 6px;
+  }
+  .tag-green { background: var(--g-light); color: var(--g2); }
+  .tag-amber { background: var(--amber-light); color: var(--amber); }
+  .tag-blue { background: #deeefb; color: #1a5fa0; }
+  .tag-gray { background: #ede9e2; color: var(--mid); }
+
+  .card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-loc {
+    font-size: 11px; color: var(--muted);
+    display: flex; align-items: center; gap: 3px;
+  }
+  .card-price {
+    font-family: var(--font-display);
+    font-size: 14px; font-weight: 800;
+    color: var(--g2);
+  }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 70px;
+    background: var(--warm-white);
+    border-top: 1px solid var(--border-strong);
+    display: flex; align-items: center;
+    z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .nav-item {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; gap: 3px;
+    cursor: pointer; padding: 8px 0;
+    color: var(--muted);
+    border: none; background: none;
+    font-family: var(--font-body);
+    transition: color 0.2s;
+  }
+  .nav-item.active { color: var(--g2); }
+  .nav-item span { font-size: 9px; font-weight: 700; }
+  .nav-add {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; gap: 3px; cursor: pointer;
+    padding: 0 0 8px; border: none; background: none;
+  }
+  .nav-add-btn {
+    width: 52px; height: 52px;
+    background: var(--g3);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: -22px;
+    box-shadow: 0 4px 16px rgba(61,128,32,0.4);
+    border: 3px solid var(--cream);
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .nav-add-btn:active { transform: scale(0.93); }
+  .nav-add span { font-size: 9px; font-weight: 700; color: var(--muted); }
+
+  /* ── DETAIL SCREEN ── */
+  .detail-header {
+    background: var(--g1);
+    padding: 52px 16px 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .back-btn {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 50%; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .detail-gallery {
+    height: 220px; flex-shrink: 0;
+    background: #d0e8b8;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .gallery-dots {
+    position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 5px;
+  }
+  .dot { height: 4px; border-radius: 2px; background: rgba(255,255,255,0.5); }
+  .dot.active { width: 20px; background: #fff; }
+  .dot:not(.active) { width: 6px; }
+  .gallery-badge {
+    position: absolute; top: 12px; right: 12px;
+    background: var(--g1);
+    color: #fff; font-size: 11px; font-weight: 700;
+    padding: 5px 12px; border-radius: 20px;
+    display: flex; align-items: center; gap: 5px;
+  }
+
+  .detail-body {
+    flex: 1; overflow-y: auto;
+    padding: 16px 16px 90px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .detail-body::-webkit-scrollbar { display: none; }
+
+  .price-row {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 6px;
+  }
+  .detail-price {
+    font-family: var(--font-display);
+    font-size: 24px; font-weight: 900;
+    color: var(--g2);
+  }
+  .detail-title { font-size: 18px; font-weight: 800; color: var(--dark); }
+  .detail-subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  .ai-card {
+    background: var(--g-light);
+    border-radius: var(--r);
+    padding: 14px;
+    margin: 14px 0;
+    border: 1px solid rgba(61,128,32,0.2);
+  }
+  .ai-card-title {
+    font-size: 11px; font-weight: 800;
+    color: var(--g2); letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .ai-metrics {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  }
+  .ai-metric {
+    background: var(--warm-white);
+    border-radius: 10px; padding: 10px;
+    text-align: center;
+  }
+  .ai-metric .mval {
+    font-family: var(--font-display);
+    font-size: 18px; font-weight: 900;
+    color: var(--g2);
+    line-height: 1;
+  }
+  .ai-metric .mlbl { font-size: 10px; color: var(--muted); margin-top: 3px; }
+
+  .section-title {
+    font-size: 13px; font-weight: 800;
+    color: var(--dark); margin-bottom: 10px;
+    margin-top: 16px;
+  }
+  .desc-text {
+    font-size: 13px; color: var(--mid);
+    line-height: 1.65;
+  }
+
+  .seller-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r);
+    padding: 12px 14px;
+    display: flex; align-items: center; gap: 12px;
+    margin-top: 14px;
+  }
+  .seller-avatar {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: var(--g-light);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-size: 16px; font-weight: 900;
+    color: var(--g2); flex-shrink: 0;
+  }
+  .seller-name { font-size: 14px; font-weight: 800; color: var(--dark); }
+  .seller-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .seller-rating {
+    margin-left: auto;
+    background: var(--amber-light);
+    color: var(--amber);
+    font-size: 12px; font-weight: 800;
+    padding: 5px 10px; border-radius: 10px;
+  }
+
+  .action-row {
+    display: flex; gap: 10px; margin-top: 16px;
+  }
+  .btn {
+    flex: 1; padding: 14px;
+    border-radius: var(--r);
+    font-size: 14px; font-weight: 800;
+    font-family: var(--font-body);
+    cursor: pointer;
+    border: none;
+    transition: transform 0.1s, opacity 0.1s;
+  }
+  .btn:active { transform: scale(0.97); opacity: 0.9; }
+  .btn-outline {
+    background: var(--warm-white);
+    border: 1.5px solid var(--border-strong);
+    color: var(--dark);
+  }
+  .btn-primary {
+    background: var(--g3);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(61,128,32,0.3);
+  }
+  .btn-interest {
+    background: var(--amber-light);
+    color: var(--amber);
+    border: 1.5px solid rgba(196,122,16,0.2);
+  }
+
+  /* ── CAMERA SCREEN ── */
+  .camera-header {
+    background: var(--g1);
+    padding: 52px 16px 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .camera-step {
+    display: flex; gap: 6px; margin-top: 8px; padding: 0 16px;
+  }
+  .step-dot {
+    height: 4px; border-radius: 2px; transition: all 0.3s;
+  }
+  .step-dot.done { background: var(--g4); flex: 1; }
+  .step-dot.active { background: var(--amber-mid); flex: 2; }
+  .step-dot.todo { background: rgba(255,255,255,0.2); flex: 1; }
+
+  .animal-selector {
+    padding: 14px 16px 10px;
+    background: var(--g1);
+    display: flex; gap: 8px;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .animal-selector::-webkit-scrollbar { display: none; }
+  .atab {
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 13px; font-weight: 700;
+    white-space: nowrap; cursor: pointer;
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.6);
+    border: none;
+    font-family: var(--font-body);
+    transition: all 0.2s; flex-shrink: 0;
+  }
+  .atab.active { background: var(--amber-mid); color: #1a1000; }
+
+  .viewfinder {
+    flex: 1;
+    background: #0d1a06;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .vf-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 60% 50%, #1a3010 0%, #0a1206 100%);
+  }
+  .vf-grain {
+    position: absolute; inset: 0;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .vf-svg { position: relative; z-index: 2; }
+
+  .view-tabs {
+    position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 6px; z-index: 5;
+  }
+  .vtab {
+    padding: 5px 14px; border-radius: 16px;
+    font-size: 12px; font-weight: 700;
+    cursor: pointer; border: none; font-family: var(--font-body);
+    background: rgba(255,255,255,0.18); color: rgba(255,255,255,0.7);
+    transition: all 0.2s;
+  }
+  .vtab.active { background: var(--amber-mid); color: #1a1000; }
+
+  .vf-hint {
+    position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+    z-index: 5;
+    background: rgba(0,0,0,0.55);
+    padding: 6px 16px; border-radius: 20px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .vf-hint span { color: var(--amber-mid); font-size: 12px; font-weight: 700; }
+
+  .camera-controls {
+    background: var(--g1);
+    padding: 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+  }
+  .shutter {
+    width: 68px; height: 68px;
+    border-radius: 50%;
+    background: #fff;
+    border: 4px solid rgba(255,255,255,0.3);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    transition: transform 0.1s;
+    flex-shrink: 0;
+  }
+  .shutter:active { transform: scale(0.93); }
+  .shutter-inner {
+    width: 50px; height: 50px; border-radius: 50%;
+    background: var(--warm-white);
+  }
+  .tip-box {
+    background: rgba(255,255,255,0.08);
+    border-radius: 10px; padding: 8px 10px;
+    flex: 1;
+  }
+  .tip-box p { color: rgba(255,255,255,0.6); font-size: 11px; line-height: 1.4; }
+  .tip-box b { color: var(--amber-mid); }
+
+  /* ── ADD FORM ── */
+  .form-screen {
+    background: var(--cream);
+  }
+  .form-header {
+    background: var(--g1);
+    padding: 52px 16px 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .form-body {
+    flex: 1; overflow-y: auto;
+    padding: 16px 16px 100px;
+  }
+  .form-body::-webkit-scrollbar { display: none; }
+  .form-section {
+    background: var(--warm-white);
+    border-radius: var(--r);
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .form-section-title {
+    font-size: 11px; font-weight: 800;
+    color: var(--muted); letter-spacing: 0.6px;
+    text-transform: uppercase;
+    padding: 12px 14px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .form-field {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .form-field:last-child { border-bottom: none; }
+  .field-label {
+    font-size: 13px; color: var(--mid); font-weight: 600;
+    min-width: 90px; flex-shrink: 0;
+  }
+  .field-input {
+    flex: 1; background: none; border: none; outline: none;
+    font-family: var(--font-body); font-size: 14px;
+    color: var(--dark); font-weight: 700;
+    text-align: right;
+  }
+  .field-input::placeholder { color: var(--muted); font-weight: 400; }
+  .field-select {
+    flex: 1; background: none; border: none; outline: none;
+    font-family: var(--font-body); font-size: 14px;
+    color: var(--dark); font-weight: 700;
+    text-align: right; cursor: pointer;
+    -webkit-appearance: none;
+  }
+
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 12px 14px;
+  }
+  .photo-slot {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    border: 1.5px dashed var(--border-strong);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 4px; cursor: pointer;
+    background: var(--cream);
+    transition: background 0.15s;
+  }
+  .photo-slot.filled {
+    background: var(--g-light);
+    border-style: solid;
+    border-color: var(--g4);
+  }
+  .photo-slot span { font-size: 10px; color: var(--muted); }
+
+  /* ── PROFILE ── */
+  .profile-header {
+    background: var(--g1);
+    padding: 52px 16px 24px;
+    text-align: center;
+  }
+  .profile-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: var(--g-light);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-size: 28px; font-weight: 900;
+    color: var(--g2);
+    margin: 0 auto 12px;
+    border: 3px solid rgba(255,255,255,0.15);
+  }
+  .profile-name {
+    font-family: var(--font-display);
+    font-size: 18px; font-weight: 800; color: #fff;
+    margin-bottom: 4px;
+  }
+  .profile-sub { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .profile-stats {
+    display: flex; gap: 1px; margin-top: 16px;
+    background: rgba(255,255,255,0.1);
+    border-radius: var(--r);
+    overflow: hidden;
+  }
+  .pstat {
+    flex: 1; padding: 12px 8px; text-align: center;
+    background: rgba(255,255,255,0.06);
+  }
+  .pstat .pval { font-family: var(--font-display); font-size: 18px; font-weight: 800; color: #fff; }
+  .pstat .plbl { font-size: 10px; color: rgba(255,255,255,0.45); margin-top: 2px; }
+
+  .profile-body { flex: 1; overflow-y: auto; padding: 16px 16px 90px; }
+  .profile-body::-webkit-scrollbar { display: none; }
+  .menu-section {
+    background: var(--warm-white);
+    border-radius: var(--r);
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .menu-item {
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .menu-item:last-child { border-bottom: none; }
+  .menu-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .menu-item-text { flex: 1; font-size: 14px; font-weight: 700; color: var(--dark); }
+  .menu-item-sub { font-size: 11px; color: var(--muted); }
+  .menu-arrow { color: var(--muted); }
+
+  /* ── TOAST ── */
+  .toast {
+    position: absolute; bottom: 85px; left: 16px; right: 16px;
+    background: var(--dark);
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: var(--r-sm);
+    font-size: 13px; font-weight: 700;
+    text-align: center;
+    z-index: 200;
+    transform: translateY(20px); opacity: 0;
+    transition: all 0.3s;
+    display: flex; align-items: center; gap: 8px; justify-content: center;
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast .tick { color: var(--g5); }
+
+  /* ── PULSE ANIMATION ── */
+  @keyframes pulse-ring {
+    0% { transform: scale(0.95); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.7; }
+    100% { transform: scale(0.95); opacity: 1; }
+  }
+  .pulse { animation: pulse-ring 2s ease-in-out infinite; }
+
+  @keyframes slideUp {
+    from { transform: translateY(10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .card { animation: slideUp 0.3s ease both; }
+  .card:nth-child(2) { animation-delay: 0.05s; }
+  .card:nth-child(3) { animation-delay: 0.1s; }
+  .card:nth-child(4) { animation-delay: 0.15s; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ══════════════════ MAIN SCREEN ══════════════════ -->
+  <div class="screen active" id="s-main">
+    <div class="header">
+      <div class="logo-row">
+        <div class="logo">
+          <div class="logo-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2L4 7v10l8 5 8-5V7L12 2z" fill="#1a3a0a"/>
+            </svg>
+          </div>
+          Малафо
+        </div>
+        <div class="header-btns">
+          <button class="header-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+          <button class="header-btn" onclick="nav('s-profile')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="white" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="search-bar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="rgba(255,255,255,0.5)" stroke-width="2"/><path d="M16.5 16.5L21 21" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Порода, вид, район...</span>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <button class="ftab active" onclick="setFilter(this, 'all')">Все</button>
+      <button class="ftab" onclick="setFilter(this, 'horse')">Лошади</button>
+      <button class="ftab" onclick="setFilter(this, 'cow')">Коровы</button>
+      <button class="ftab" onclick="setFilter(this, 'sheep')">Бараны</button>
+      <button class="ftab" onclick="setFilter(this, 'goat')">Козы</button>
+      <button class="ftab" onclick="setFilter(this, 'camel')">Верблюды</button>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-pill"><div class="val">247</div><div class="lbl">объявлений</div></div>
+      <div class="stat-pill"><div class="val" style="color:var(--amber)">Каракол</div><div class="lbl">ваш район</div></div>
+      <div class="stat-pill"><div class="val">+18</div><div class="lbl">сегодня</div></div>
+    </div>
+
+    <div class="listings" id="listings">
+      <!-- Cards injected by JS -->
+    </div>
+
+    <nav class="bottom-nav">
+      <button class="nav-item active" onclick="nav('s-main')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Главная</span>
+      </button>
+      <button class="nav-item" onclick="nav('s-main')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Поиск</span>
+      </button>
+      <button class="nav-add" onclick="nav('s-camera')">
+        <div class="nav-add-btn pulse">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>
+        </div>
+        <span>Продать</span>
+      </button>
+      <button class="nav-item" onclick="showToast('Чат скоро появится')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        <span>Чат</span>
+      </button>
+      <button class="nav-item" onclick="nav('s-profile')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Профиль</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ══════════════════ DETAIL SCREEN ══════════════════ -->
+  <div class="screen" id="s-detail">
+    <div class="detail-header">
+      <button class="back-btn" onclick="back()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <span style="color:rgba(255,255,255,0.7);font-size:14px;font-weight:700;" id="detail-breadcrumb">Лошадь</span>
+    </div>
+
+    <div class="detail-gallery" id="detail-gallery">
+      <div class="gallery-dots">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <div class="gallery-badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm0 18a8 8 0 110-16 8 8 0 010 16z"/></svg>
+        ИИ оценка
+      </div>
+    </div>
+
+    <div class="detail-body" id="detail-body">
+      <!-- Injected by JS -->
+    </div>
+
+    <nav class="bottom-nav">
+      <button class="btn btn-interest" onclick="showToast('Продавец получит уведомление')" style="flex:1;margin:0 16px;">
+        👀 Еду смотреть
+      </button>
+      <button class="btn btn-primary" onclick="showToast('Открываю чат...')" style="flex:1;margin:0 16px 0 0;">
+        Написать
+      </button>
+    </nav>
+  </div>
+
+  <!-- ══════════════════ CAMERA SCREEN ══════════════════ -->
+  <div class="screen" id="s-camera">
+    <div class="camera-header">
+      <button class="back-btn" onclick="back()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div>
+        <div style="color:#fff;font-size:15px;font-weight:800;">Фото животного</div>
+        <div style="color:rgba(255,255,255,0.5);font-size:11px;margin-top:1px;">Шаг 1 из 3 — Фотографирование</div>
+      </div>
+    </div>
+
+    <div class="camera-step" style="background:var(--g1);padding:0 16px 14px;gap:6px;display:flex;">
+      <div class="step-dot done"></div>
+      <div class="step-dot active"></div>
+      <div class="step-dot todo"></div>
+    </div>
+
+    <div class="animal-selector">
+      <button class="atab active" onclick="setAnimal(this,'horse')">Лошадь</button>
+      <button class="atab" onclick="setAnimal(this,'cow')">Корова</button>
+      <button class="atab" onclick="setAnimal(this,'sheep')">Баран</button>
+      <button class="atab" onclick="setAnimal(this,'goat')">Коза</button>
+      <button class="atab" onclick="setAnimal(this,'camel')">Верблюд</button>
+    </div>
+
+    <div class="viewfinder" id="viewfinder">
+      <div class="vf-bg"></div>
+      <div class="vf-grain"></div>
+
+      <div class="view-tabs">
+        <button class="vtab active" onclick="setView(this,'side')">Сбоку</button>
+        <button class="vtab" onclick="setView(this,'front')">Спереди</button>
+        <button class="vtab" onclick="setView(this,'back')">Сзади</button>
+      </div>
+
+      <svg id="vf-svg" class="vf-svg" width="300" height="200" viewBox="0 0 300 200" fill="none">
+        <!-- Frame -->
+        <rect x="8" y="8" width="284" height="184" rx="10" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-dasharray="8 5" fill="none"/>
+        <!-- Corners -->
+        <path d="M20 36 L20 20 L36 20" stroke="rgba(240,168,32,0.9)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <path d="M264 36 L264 20 L280 20" stroke="rgba(240,168,32,0.9)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <path d="M20 164 L20 180 L36 180" stroke="rgba(240,168,32,0.9)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <path d="M264 164 L264 180 L280 180" stroke="rgba(240,168,32,0.9)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <!-- Horse silhouette -->
+        <g id="animal-silhouette" opacity="0.55">
+          <ellipse cx="138" cy="118" rx="80" ry="44" fill="rgba(255,255,255,0.12)" stroke="rgba(240,168,32,0.85)" stroke-width="2"/>
+          <ellipse cx="200" cy="100" rx="42" ry="32" fill="rgba(255,255,255,0.1)" stroke="rgba(240,168,32,0.85)" stroke-width="2"/>
+          <ellipse cx="214" cy="74" rx="20" ry="22" fill="rgba(255,255,255,0.1)" stroke="rgba(240,168,32,0.85)" stroke-width="2"/>
+          <path d="M220 55 L234 32 L226 30 L218 52" stroke="rgba(240,168,32,0.85)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <line x1="82" y1="154" x2="86" y2="178" stroke="rgba(240,168,32,0.85)" stroke-width="5" stroke-linecap="round"/>
+          <line x1="106" y1="158" x2="110" y2="182" stroke="rgba(240,168,32,0.85)" stroke-width="5" stroke-linecap="round"/>
+          <line x1="160" y1="155" x2="164" y2="179" stroke="rgba(240,168,32,0.85)" stroke-width="5" stroke-linecap="round"/>
+          <line x1="182" y1="154" x2="186" y2="178" stroke="rgba(240,168,32,0.85)" stroke-width="5" stroke-linecap="round"/>
+          <path d="M50 118 Q36 108 40 96" stroke="rgba(240,168,32,0.85)" stroke-width="4" stroke-linecap="round" fill="none"/>
+        </g>
+      </svg>
+
+      <div class="vf-hint">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 22C6.5 22 2 17.5 2 12S6.5 2 12 2s10 4.5 10 10-4.5 10-10 10zm0-14v4m0 4h.01" stroke="rgba(240,168,32,0.9)" stroke-width="2.5" stroke-linecap="round"/></svg>
+        <span>Совместите с контуром</span>
+      </div>
+    </div>
+
+    <div class="camera-controls">
+      <div class="tip-box">
+        <p><b>Сбоку:</b> вся туша видна. Станьте на расстоянии 3–4 метра. Свет сзади вас.</p>
+      </div>
+      <div class="shutter" onclick="simulateShot()">
+        <div class="shutter-inner"></div>
+      </div>
+      <div style="width:80px;text-align:center;">
+        <div id="shot-counter" style="color:rgba(255,255,255,0.4);font-size:12px;">0 / 3 фото</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ ADD FORM SCREEN ══════════════════ -->
+  <div class="screen form-screen" id="s-form">
+    <div class="form-header">
+      <button class="back-btn" onclick="back()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div>
+        <div style="color:#fff;font-size:15px;font-weight:800;">Подробности</div>
+        <div style="color:rgba(255,255,255,0.5);font-size:11px;margin-top:1px;">Шаг 2 из 3 — Заполните данные</div>
+      </div>
+    </div>
+
+    <div class="camera-step" style="background:var(--g1);padding:0 16px 14px;gap:6px;display:flex;">
+      <div class="step-dot done"></div>
+      <div class="step-dot done"></div>
+      <div class="step-dot active"></div>
+    </div>
+
+    <!-- AI result banner -->
+    <div style="background:var(--g3);padding:12px 16px;display:flex;gap:10px;align-items:center;flex-shrink:0;">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm0 5v5l3 3" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      <div>
+        <div style="color:#fff;font-size:12px;font-weight:800;">ИИ определил по фото</div>
+        <div style="color:rgba(255,255,255,0.7);font-size:11px;">Примерный вес: <b style="color:#fff;">~380 кг</b> · Упитанность: <b style="color:#fff;">4/5</b> · Возраст: <b style="color:#fff;">3–5 лет</b></div>
+      </div>
+    </div>
+
+    <div class="form-body">
+      <div class="photo-grid" style="background:var(--warm-white);border-radius:var(--r);border:1px solid var(--border);margin-bottom:12px;padding:12px;">
+        <div class="photo-slot filled" style="display:flex;align-items:center;justify-content:center;">
+          <svg width="28" height="28" viewBox="0 0 80 70" fill="none">
+            <ellipse cx="38" cy="42" rx="26" ry="16" fill="#8B7355"/>
+            <ellipse cx="55" cy="36" rx="14" ry="10" fill="#9B8365"/>
+            <ellipse cx="60" cy="28" rx="7" ry="8" fill="#8B7355"/>
+          </svg>
+        </div>
+        <div class="photo-slot filled" style="display:flex;align-items:center;justify-content:center;">
+          <svg width="28" height="28" viewBox="0 0 60 60" fill="none">
+            <ellipse cx="30" cy="32" rx="16" ry="20" fill="#8B7355"/>
+            <circle cx="30" cy="18" r="10" fill="#9B8365"/>
+          </svg>
+        </div>
+        <div class="photo-slot" onclick="showToast('Добавьте фото сзади')">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"/></svg>
+          <span>Сзади</span>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Основное</div>
+        <div class="form-field">
+          <div class="field-label">Вид</div>
+          <select class="field-select"><option>Лошадь</option><option>Корова</option><option>Баран</option><option>Коза</option></select>
+        </div>
+        <div class="form-field">
+          <div class="field-label">Порода</div>
+          <select class="field-select"><option>Ала-тоо</option><option>Советский меринос</option><option>Киргизская</option></select>
+        </div>
+        <div class="form-field">
+          <div class="field-label">Пол</div>
+          <select class="field-select"><option>Жеребец</option><option>Кобыла</option><option>Мерин</option></select>
+        </div>
+        <div class="form-field">
+          <div class="field-label">Возраст</div>
+          <input class="field-input" type="number" placeholder="лет" value="4">
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Характеристики</div>
+        <div class="form-field">
+          <div class="field-label">Объезжен</div>
+          <select class="field-select"><option>Да</option><option>Нет</option></select>
+        </div>
+        <div class="form-field">
+          <div class="field-label">Прививки</div>
+          <select class="field-select"><option>Сделаны</option><option>Не сделаны</option></select>
+        </div>
+        <div class="form-field">
+          <div class="field-label">Вес (кг)</div>
+          <input class="field-input" type="number" placeholder="ИИ: ~380" value="380">
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Цена и расположение</div>
+        <div class="form-field">
+          <div class="field-label">Цена (сом)</div>
+          <input class="field-input" type="number" placeholder="0">
+        </div>
+        <div class="form-field">
+          <div class="field-label">Торг</div>
+          <select class="field-select"><option>Уместен</option><option>Без торга</option></select>
+        </div>
+        <div class="form-field">
+          <div class="field-label">Район</div>
+          <select class="field-select"><option>Каракол</option><option>Ак-Суу</option><option>Тюп</option><option>Пржевальск</option></select>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Описание</div>
+        <div class="form-field">
+          <textarea class="field-input" placeholder="Добавьте подробности о животном..." style="text-align:left;height:80px;resize:none;padding-top:4px;"></textarea>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" style="width:100%;margin-top:4px;" onclick="showToast('Объявление отправлено на проверку!')">
+        Опубликовать объявление
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════ PROFILE SCREEN ══════════════════ -->
+  <div class="screen" id="s-profile">
+    <div class="profile-header">
+      <div class="profile-avatar">А</div>
+      <div class="profile-name">Асылбек</div>
+      <div class="profile-sub">+996 700 123 456 · Каракол</div>
+      <div class="profile-stats">
+        <div class="pstat"><div class="pval">14</div><div class="plbl">продаж</div></div>
+        <div class="pstat"><div class="pval">4.9★</div><div class="plbl">рейтинг</div></div>
+        <div class="pstat"><div class="pval">8 мес</div><div class="plbl">на Малафо</div></div>
+      </div>
+    </div>
+
+    <div class="profile-body">
+      <div class="menu-section">
+        <div class="menu-item" onclick="showToast('Мои объявления')">
+          <div class="menu-icon" style="background:var(--g-light);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1" stroke="var(--g2)" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="var(--g2)" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="var(--g2)" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1" stroke="var(--g2)" stroke-width="2"/></svg>
+          </div>
+          <div><div class="menu-item-text">Мои объявления</div><div class="menu-item-sub">3 активных</div></div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="menu-arrow"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="menu-item" onclick="showToast('Избранное')">
+          <div class="menu-icon" style="background:#fdecea;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" stroke="#c0392b" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div><div class="menu-item-text">Избранное</div><div class="menu-item-sub">7 объявлений</div></div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="menu-arrow"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="menu-item" onclick="showToast('История сделок')">
+          <div class="menu-icon" style="background:var(--amber-light);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="var(--amber)" stroke-width="2"/><path d="M12 7v5l3 3" stroke="var(--amber)" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div><div class="menu-item-text">История сделок</div><div class="menu-item-sub">14 завершённых</div></div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="menu-arrow"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+
+      <div class="menu-section">
+        <div class="menu-item" onclick="showToast('Средняя цена барана: 12 400 сом')">
+          <div class="menu-icon" style="background:#deeefb;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 20V10M12 20V4M6 20v-6" stroke="#185FA5" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div><div class="menu-item-text">Цены рынка</div><div class="menu-item-sub">Актуальные цены по Иссык-Кулю</div></div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="menu-arrow"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="menu-item" onclick="showToast('Ветеринарные справки')">
+          <div class="menu-icon" style="background:#e8f5d8;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" stroke="var(--g2)" stroke-width="2"/></svg>
+          </div>
+          <div><div class="menu-item-text">Документы</div><div class="menu-item-sub">Справки и ветпаспорта</div></div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="menu-arrow"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+
+      <div class="menu-section">
+        <div class="menu-item" onclick="showToast('Настройки')">
+          <div class="menu-icon" style="background:var(--cream);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="var(--mid)" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="var(--mid)" stroke-width="2"/></svg>
+          </div>
+          <div class="menu-item-text">Настройки</div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="menu-arrow"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <nav class="bottom-nav">
+      <button class="nav-item" onclick="nav('s-main')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Главная</span>
+      </button>
+      <button class="nav-item" onclick="nav('s-main')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Поиск</span>
+      </button>
+      <button class="nav-add" onclick="nav('s-camera')">
+        <div class="nav-add-btn">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>
+        </div>
+        <span>Продать</span>
+      </button>
+      <button class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        <span>Чат</span>
+      </button>
+      <button class="nav-item active" onclick="nav('s-profile')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Профиль</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <span class="tick">✓</span>
+    <span id="toast-msg"></span>
+  </div>
+
+</div>
+
+<script>
+// ── DATA ──
+const animals = [
+  {
+    id: 1, type: 'horse',
+    title: 'Жеребец, 4 года', sub: 'Ала-тоо · объезженный',
+    price: '85 000 сом', loc: 'Ак-Суу, 12 км', age: '2 ч назад',
+    tags: [{t:'Лошадь',c:'tag-green'},{t:'Упитанный',c:'tag-amber'}],
+    weight: '~380', score: '4/5', build: 'хорош.',
+    gallery: '#d4e8c2', desc: 'Продаю жеребца 4 лет, ала-тоо. Объезженный, послушный. Прививки сделаны. Можно торговаться при осмотре.',
+    seller: 'Асылбек', sellerAge: '8 месяцев', sellerSales: '14', sellerRating: '4.9',
+    svgAnimal: horseSVG(),
+  },
+  {
+    id: 2, type: 'cow',
+    title: 'Корова, стельная', sub: 'Ала-тоо · 3-й отёл',
+    price: '65 000 сом', loc: 'Тюп, 45 км', age: 'вчера',
+    tags: [{t:'Корова',c:'tag-blue'},{t:'Стельная',c:'tag-green'}],
+    weight: '~260', score: '3/5', build: 'средн.',
+    gallery: '#e4ddc8', desc: 'Стельная корова, третий отёл. Молочная, даёт около 12 литров в сутки. Осмотр возможен.',
+    seller: 'Чынгыз', sellerAge: '1 год', sellerSales: '8', sellerRating: '4.7',
+    svgAnimal: cowSVG(),
+  },
+  {
+    id: 3, type: 'sheep',
+    title: 'Баран, 2 года', sub: 'Советский меринос',
+    price: '12 500 сом', loc: 'Каракол, 3 км', age: '3 ч назад',
+    tags: [{t:'Баран',c:'tag-amber'},{t:'Средний',c:'tag-gray'}],
+    weight: '~45', score: '3/5', build: 'норм.',
+    gallery: '#f0ede2', desc: 'Баран советского мериноса, 2 года. Хороший настриг шерсти. Продаю в связи с сокращением отары.',
+    seller: 'Нурлан', sellerAge: '3 месяца', sellerSales: '2', sellerRating: '5.0',
+    svgAnimal: sheepSVG(),
+  },
+  {
+    id: 4, type: 'horse',
+    title: 'Кобыла, 6 лет', sub: 'Киргизская · дойная',
+    price: '72 000 сом', loc: 'Балыкчы, 80 км', age: 'сегодня',
+    tags: [{t:'Лошадь',c:'tag-green'},{t:'Дойная',c:'tag-blue'}],
+    weight: '~340', score: '4/5', build: 'хорош.',
+    gallery: '#dae8d0', desc: 'Дойная кобыла, 6 лет. Даёт до 5 литров кумыса в день. Спокойный характер, привита.',
+    seller: 'Бакыт', sellerAge: '5 месяцев', sellerSales: '6', sellerRating: '4.8',
+    svgAnimal: horseSVG(),
+  },
+];
+
+function horseSVG() {
+  return `<svg width="100" height="80" viewBox="0 0 100 80" fill="none">
+    <ellipse cx="46" cy="52" rx="34" ry="20" fill="#8B7355"/>
+    <ellipse cx="68" cy="42" rx="18" ry="14" fill="#9B8365"/>
+    <ellipse cx="74" cy="30" rx="10" ry="11" fill="#8B7355"/>
+    <path d="M78 22 L86 10 L82 9 L76 20" fill="#7A6245"/>
+    <rect x="22" y="66" width="7" height="12" rx="3" fill="#7A6245"/>
+    <rect x="34" y="68" width="7" height="10" rx="3" fill="#7A6245"/>
+    <rect x="52" y="67" width="7" height="11" rx="3" fill="#7A6245"/>
+    <rect x="64" y="66" width="7" height="12" rx="3" fill="#7A6245"/>
+    <path d="M14 52 Q8 46 10 40" stroke="#7A6245" stroke-width="4" stroke-linecap="round" fill="none"/>
+  </svg>`;
+}
+
+function cowSVG() {
+  return `<svg width="100" height="80" viewBox="0 0 100 80" fill="none">
+    <ellipse cx="48" cy="52" rx="30" ry="18" fill="#C4A882"/>
+    <ellipse cx="68" cy="44" rx="16" ry="13" fill="#D4B892"/>
+    <ellipse cx="72" cy="32" rx="9" ry="9" fill="#C4A882"/>
+    <path d="M68 24 Q70 18 68 15" stroke="#B09070" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M76 24 Q78 18 76 15" stroke="#B09070" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <rect x="28" y="64" width="6" height="11" rx="3" fill="#B09070"/>
+    <rect x="40" y="66" width="6" height="9" rx="3" fill="#B09070"/>
+    <rect x="54" y="65" width="6" height="10" rx="3" fill="#B09070"/>
+    <rect x="66" y="64" width="6" height="11" rx="3" fill="#B09070"/>
+  </svg>`;
+}
+
+function sheepSVG() {
+  return `<svg width="100" height="80" viewBox="0 0 100 80" fill="none">
+    <ellipse cx="46" cy="52" rx="24" ry="16" fill="#D4C8A0"/>
+    <ellipse cx="62" cy="44" rx="14" ry="12" fill="#E0D4B0"/>
+    <ellipse cx="66" cy="33" rx="9" ry="9" fill="#D4C8A0"/>
+    <path d="M63 25 Q65 20 63 17" stroke="#A89870" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <path d="M69 25 Q71 20 69 17" stroke="#A89870" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <rect x="30" y="63" width="5" height="10" rx="2" fill="#A89870"/>
+    <rect x="40" y="65" width="5" height="8" rx="2" fill="#A89870"/>
+    <rect x="52" y="64" width="5" height="9" rx="2" fill="#A89870"/>
+    <rect x="62" y="63" width="5" height="10" rx="2" fill="#A89870"/>
+  </svg>`;
+}
+
+// ── RENDER LISTINGS ──
+function renderListings(filter) {
+  const list = document.getElementById('listings');
+  const filtered = filter === 'all' ? animals : animals.filter(a => a.type === filter);
+  list.innerHTML = filtered.map((a,i) => `
+    <div class="card" style="animation-delay:${i*0.06}s" onclick="openDetail(${a.id})">
+      <div class="card-img" style="background:${a.gallery}">
+        ${a.svgAnimal}
+        <div class="ai-badge">ИИ: ${a.weight} кг</div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="card-title">${a.title}</div>
+          <div class="card-sub">${a.sub}</div>
+          <div class="tags">${a.tags.map(t=>`<span class="tag ${t.c}">${t.t}</span>`).join('')}</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-loc">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="var(--muted)"><path d="M12 2C8 2 5 5 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-4-3-7-7-7z"/></svg>
+            ${a.loc}
+          </div>
+          <div class="card-price">${a.price}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── NAVIGATION ──
+let history = [];
+function nav(screenId) {
+  const cur = document.querySelector('.screen.active');
+  if (cur && cur.id !== screenId) {
+    cur.classList.remove('active');
+    cur.classList.add('left');
+    history.push(cur.id);
+  }
+  const next = document.getElementById(screenId);
+  next.classList.remove('left');
+  next.classList.add('active');
+}
+
+function back() {
+  const cur = document.querySelector('.screen.active');
+  cur.classList.remove('active');
+  setTimeout(() => cur.classList.remove('left'), 400);
+  const prev = history.pop() || 's-main';
+  const target = document.getElementById(prev);
+  target.classList.remove('left');
+  target.classList.add('active');
+}
+
+// ── DETAIL ──
+function openDetail(id) {
+  const a = animals.find(x => x.id === id);
+  document.getElementById('detail-breadcrumb').textContent = a.title;
+  document.getElementById('detail-gallery').style.background = a.gallery;
+
+  // inject large svg into gallery
+  const existSvg = document.getElementById('detail-gallery').querySelector('.animal-large');
+  if (existSvg) existSvg.remove();
+  const div = document.createElement('div');
+  div.className = 'animal-large';
+  div.style.transform = 'scale(1.6)';
+  div.innerHTML = a.svgAnimal;
+  document.getElementById('detail-gallery').insertBefore(div, document.getElementById('detail-gallery').firstChild);
+
+  document.getElementById('detail-body').innerHTML = `
+    <div class="price-row">
+      <div><div class="detail-title">${a.title}</div><div class="detail-subtitle">${a.sub} · ${a.loc}</div></div>
+      <div class="detail-price">${a.price}</div>
+    </div>
+    <div class="tags" style="margin-top:8px;">${a.tags.map(t=>`<span class="tag ${t.c}">${t.t}</span>`).join('')}</div>
+
+    <div class="ai-card">
+      <div class="ai-card-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2z" stroke="var(--g2)" stroke-width="2"/><path d="M12 8v4l3 3" stroke="var(--g2)" stroke-width="2" stroke-linecap="round"/></svg>
+        Анализ по фото
+      </div>
+      <div class="ai-metrics">
+        <div class="ai-metric"><div class="mval">${a.weight}</div><div class="mlbl">кг живого</div></div>
+        <div class="ai-metric"><div class="mval" style="color:var(--amber)">${a.score}</div><div class="mlbl">упитанность</div></div>
+        <div class="ai-metric"><div class="mval" style="font-size:14px;color:#185FA5">${a.build}</div><div class="mlbl">телосложение</div></div>
+      </div>
+    </div>
+
+    <div class="section-title">Описание</div>
+    <div class="desc-text">${a.desc}</div>
+
+    <div class="seller-card">
+      <div class="seller-avatar">${a.seller[0]}</div>
+      <div>
+        <div class="seller-name">${a.seller}</div>
+        <div class="seller-sub">На Малафо ${a.sellerAge} · ${a.sellerSales} продаж</div>
+      </div>
+      <div class="seller-rating">★ ${a.sellerRating}</div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn btn-interest" onclick="showToast('Продавец получит уведомление!')">👀 Еду смотреть</button>
+      <button class="btn btn-primary" onclick="showToast('Открываю чат...')">Написать</button>
+    </div>
+
+    <div style="margin-top:14px;padding:12px;background:var(--warm-white);border-radius:var(--r);border:1px solid var(--border);text-align:center;">
+      <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Средняя цена этой категории</div>
+      <div style="font-family:var(--font-display);font-size:16px;font-weight:800;color:var(--g2);">${parseInt(a.price) ? (parseInt(a.price.replace(/\D/g,'')) * 0.96).toLocaleString('ru') : '—'} сом</div>
+      <div style="font-size:10px;color:var(--g4);margin-top:2px;">Ваша цена на 4% выше рынка</div>
+    </div>
+  `;
+  nav('s-detail');
+}
+
+// ── FILTERS ──
+function setFilter(el, type) {
+  document.querySelectorAll('.ftab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderListings(type);
+}
+
+// ── CAMERA ──
+let shots = 0;
+function simulateShot() {
+  if (shots >= 3) { nav('s-form'); return; }
+  shots++;
+  document.getElementById('shot-counter').textContent = `${shots} / 3 фото`;
+  const vf = document.getElementById('viewfinder');
+  vf.style.background = '#fff';
+  setTimeout(() => { vf.style.background = ''; vf.style.transition = 'background 0.3s'; }, 120);
+  if (shots === 3) {
+    setTimeout(() => { showToast('Фото готовы! Заполните данные'); nav('s-form'); shots = 0; document.getElementById('shot-counter').textContent = '0 / 3 фото'; }, 500);
+  }
+  // advance view tab
+  const views = ['side','front','back'];
+  const tabs = document.querySelectorAll('.vtab');
+  tabs.forEach((t,i) => { t.classList.toggle('active', i === shots % 3 < 3 ? shots % 3 === 0 ? 0 : shots-1 : 2); });
+  if (shots < 3) tabs.forEach((t,i) => t.classList.toggle('active', i === shots));
+}
+
+function setAnimal(el, type) {
+  document.querySelectorAll('.atab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function setView(el, v) {
+  document.querySelectorAll('.vtab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── TOAST ──
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  const m = document.getElementById('toast-msg');
+  m.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ── INIT ──
+renderListings('all');
+</script>
+</body>
+</html>

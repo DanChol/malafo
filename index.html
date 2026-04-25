@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Малафо">
+<meta name="theme-color" content="#1a3a0a">
+<link rel="manifest" href="manifest.json">
+<title>Малафо — скот Кыргызстана</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ═══ LOADER ════════════════════════════════════ -->
+  <div id="loader">
+    <div class="logo-text">Малафо</div>
+    <div class="spin"></div>
+  </div>
+
+  <!-- ═══ SCREEN: MAIN ══════════════════════════════ -->
+  <div class="screen" id="screen-main">
+    <div class="hdr">
+      <div class="hdr-row">
+        <div class="logo">
+          <div class="logo-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2L4 7v10l8 5 8-5V7L12 2z" fill="#1a3a0a"/>
+            </svg>
+          </div>
+          Малафо
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="hdr-btn" onclick="goTo('screen-chat')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+          </button>
+          <button class="hdr-btn" onclick="goTo('screen-profile')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="white" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="searchbar">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="rgba(255,255,255,0.38)" stroke-width="2"/><path d="M16.5 16.5L21 21" stroke="rgba(255,255,255,0.38)" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="search-input" type="text" placeholder="Порода, вид, район..." oninput="renderCards()">
+      </div>
+    </div>
+
+    <div class="ftabs">
+      <button class="ftab on" onclick="setFilter('all',this)">Все</button>
+      <button class="ftab" onclick="setFilter('horse',this)">Лошади</button>
+      <button class="ftab" onclick="setFilter('cow',this)">Коровы</button>
+      <button class="ftab" onclick="setFilter('sheep',this)">Бараны</button>
+      <button class="ftab" onclick="setFilter('goat',this)">Козы</button>
+      <button class="ftab" onclick="setFilter('camel',this)">Верблюды</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card"><div class="v" id="stat-cnt">0</div><div class="l">объявлений</div></div>
+      <div class="stat-card"><div class="v" style="color:var(--ad)">Каракол</div><div class="l">ваш район</div></div>
+      <div class="stat-card"><div class="v" id="stat-new">+0</div><div class="l">сегодня</div></div>
+    </div>
+
+    <div class="listings" id="listings"></div>
+  </div>
+
+  <!-- ═══ SCREEN: DETAIL ════════════════════════════ -->
+  <div class="screen" id="screen-detail">
+    <div class="sub-hdr">
+      <button class="back-btn" onclick="goBack()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div>
+        <div class="sub-title" id="detail-crumb"></div>
+      </div>
+    </div>
+    <div class="gallery" id="detail-gallery"></div>
+    <div class="scroll-body" id="detail-body"></div>
+  </div>
+
+  <!-- ═══ SCREEN: CAMERA ════════════════════════════ -->
+  <div class="screen" id="screen-camera">
+    <div class="sub-hdr">
+      <button class="back-btn" onclick="goBack()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div>
+        <div class="sub-title">Фото животного</div>
+        <div class="sub-sub">Сделайте 3 фото с разных сторон</div>
+      </div>
+    </div>
+
+    <div class="step-bar">
+      <div class="sdot done"></div>
+      <div class="sdot cur"></div>
+      <div class="sdot todo"></div>
+    </div>
+
+    <div class="animal-tabs">
+      <button class="atab on" onclick="setAnimalType('horse',this)">Лошадь</button>
+      <button class="atab" onclick="setAnimalType('cow',this)">Корова</button>
+      <button class="atab" onclick="setAnimalType('sheep',this)">Баран</button>
+      <button class="atab" onclick="setAnimalType('goat',this)">Коза</button>
+      <button class="atab" onclick="setAnimalType('camel',this)">Верблюд</button>
+    </div>
+
+    <div class="viewfinder" id="viewfinder">
+      <video id="cam-video" autoplay playsinline muted></video>
+
+      <!-- SVG overlay with guide -->
+      <div class="vf-overlay">
+        <svg width="88%" height="88%" viewBox="0 0 300 200" fill="none">
+          <!-- Corner brackets -->
+          <path d="M20 36L20 20L36 20" stroke="rgba(240,168,32,.9)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <path d="M264 36L264 20L280 20" stroke="rgba(240,168,32,.9)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <path d="M20 164L20 180L36 180" stroke="rgba(240,168,32,.9)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <path d="M264 164L264 180L280 180" stroke="rgba(240,168,32,.9)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <!-- Dashed frame -->
+          <rect x="8" y="8" width="284" height="184" rx="10"
+            stroke="rgba(255,255,255,0.13)" stroke-width="1.5"
+            stroke-dasharray="8 5" fill="none"/>
+          <!-- Animal guide — updated by JS -->
+          <g id="cam-guide" opacity="0.55"></g>
+        </svg>
+      </div>
+
+      <!-- View tabs -->
+      <div class="view-tabs">
+        <button class="vtab on" onclick="setView(0,this)">Сбоку</button>
+        <button class="vtab" onclick="setView(1,this)">Спереди</button>
+        <button class="vtab" onclick="setView(2,this)">Сзади</button>
+      </div>
+
+      <!-- Hint -->
+      <div class="vf-hint"><span id="cam-hint">Совместите животное с контуром</span></div>
+    </div>
+
+    <div class="cam-ctrl">
+      <div class="cam-tip" id="cam-tip"><b>Сбоку:</b> вся туша видна. 3–4 м. Свет сзади вас.</div>
+      <button class="shutter" onclick="takePhoto()"><div class="shutter-inner"></div></button>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+        <button class="flip-btn" onclick="flipCam()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M1 4v6h6M23 20v-6h-6" stroke="white" stroke-width="2" stroke-linecap="round"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 013.51 15" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <div class="shot-count" id="shot-count">0/3</div>
+      </div>
+    </div>
+
+    <canvas id="cam-canvas" style="display:none"></canvas>
+  </div>
+
+  <!-- ═══ SCREEN: FORM ═══════════════════════════════ -->
+  <div class="screen" id="screen-form">
+    <div class="sub-hdr">
+      <button class="back-btn" onclick="goBack()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div>
+        <div class="sub-title">Подробности</div>
+        <div class="sub-sub">Заполните и опубликуйте</div>
+      </div>
+    </div>
+
+    <div class="ai-banner" id="ai-banner" style="display:none">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><circle cx="12" cy="12" r="10" stroke="white" stroke-width="2"/><path d="M12 8v4l3 3" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      <p>ИИ по фото: вес <b id="ai-weight">—</b> · упитанность <b id="ai-score">—</b></p>
+    </div>
+
+    <div class="scroll-body">
+      <!-- Photos -->
+      <div class="form-section">
+        <div class="photo-grid" id="photo-previews"></div>
+      </div>
+
+      <!-- Basic info -->
+      <div class="form-section">
+        <div class="form-section-title">Основное</div>
+        <div class="form-row">
+          <div class="form-label">Вид</div>
+          <select class="form-input" id="f-type">
+            <option value="horse">Лошадь</option>
+            <option value="cow">Корова</option>
+            <option value="sheep">Баран</option>
+            <option value="goat">Коза</option>
+            <option value="camel">Верблюд</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-label">Порода</div>
+          <input class="form-input" id="f-breed" type="text" placeholder="Ала-тоо, киргизская...">
+        </div>
+        <div class="form-row">
+          <div class="form-label">Пол</div>
+          <select class="form-input" id="f-gender">
+            <option>Жеребец</option><option>Кобыла</option><option>Мерин</option>
+            <option>Бык</option><option>Корова</option>
+            <option>Баран</option><option>Овца</option>
+            <option>Козёл</option><option>Коза</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-label">Возраст</div>
+          <input class="form-input" id="f-age" type="number" placeholder="лет" min="0" max="30">
+        </div>
+      </div>
+
+      <!-- Characteristics -->
+      <div class="form-section">
+        <div class="form-section-title">Характеристики</div>
+        <div class="form-row">
+          <div class="form-label">Особенности</div>
+          <input class="form-input" id="f-features" type="text" placeholder="объезженный, стельная...">
+        </div>
+        <div class="form-row">
+          <div class="form-label">Прививки</div>
+          <select class="form-input" id="f-vacc">
+            <option value="yes">Сделаны</option>
+            <option value="no">Не сделаны</option>
+            <option value="unk">Не знаю</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-label">Вес (кг)</div>
+          <input class="form-input" id="f-wt" type="number" placeholder="примерный вес">
+        </div>
+      </div>
+
+      <!-- Price & location -->
+      <div class="form-section">
+        <div class="form-section-title">Цена и место</div>
+        <div class="form-row">
+          <div class="form-label">Цена (сом)</div>
+          <input class="form-input" id="f-price" type="number" placeholder="0">
+        </div>
+        <div class="form-row">
+          <div class="form-label">Торг</div>
+          <select class="form-input" id="f-barg">
+            <option value="yes">Уместен</option>
+            <option value="no">Без торга</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-label">Район</div>
+          <select class="form-input" id="f-district">
+            <option>Каракол</option><option>Ак-Суу</option><option>Тюп</option>
+            <option>Тон</option><option>Джети-Огуз</option>
+            <option>Балыкчы</option><option>Пржевальск</option><option>Другой</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-label">Айыл / село</div>
+          <input class="form-input" id="f-village" type="text" placeholder="необязательно">
+        </div>
+        <div class="form-row">
+          <div class="form-label">Ваш телефон</div>
+          <input class="form-input" id="f-phone" type="tel" placeholder="+996 700 ...">
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="form-section">
+        <div class="form-section-title">Описание</div>
+        <div class="form-row">
+          <textarea class="form-input" id="f-desc" placeholder="Расскажите подробнее об животном..."></textarea>
+        </div>
+      </div>
+
+      <button class="btn btn-p btn-full" onclick="publish()">Опубликовать объявление</button>
+      <button class="btn btn-o" style="width:100%" onclick="goBack()">Назад</button>
+      <div style="height:8px"></div>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN: CHAT LIST ════════════════════════ -->
+  <div class="screen" id="screen-chat">
+    <div class="sub-hdr">
+      <button class="back-btn" onclick="goBack()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div><div class="sub-title">Сообщения</div></div>
+    </div>
+    <div class="listings" id="chat-list"></div>
+  </div>
+
+  <!-- ═══ SCREEN: MESSAGES ══════════════════════════ -->
+  <div class="screen" id="screen-msgs">
+    <div class="sub-hdr">
+      <button class="back-btn" onclick="goBack()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div class="msgs-listing" onclick="openDetailFromMsgs()">
+        <div class="t" id="msgs-title">Чат</div>
+        <div class="p" id="msgs-sub">нажмите — открыть объявление</div>
+      </div>
+    </div>
+    <div class="msgs-area" id="msgs-area"></div>
+    <div class="msg-composer">
+      <textarea class="msg-input" id="msg-input" placeholder="Написать..." rows="1"
+        oninput="autoResize(this)"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
+      <button class="send-btn" onclick="sendMsg()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN: PRICES ════════════════════════════ -->
+  <div class="screen" id="screen-prices">
+    <div class="sub-hdr">
+      <button class="back-btn" onclick="goBack()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div><div class="sub-title">Цены рынка</div></div>
+    </div>
+    <div class="scroll-body">
+      <p style="font-size:13px;color:var(--mu);margin-bottom:14px;line-height:1.5">
+        Средние цены по объявлениям на Малафо. Обновляется автоматически.
+      </p>
+      <div id="prices-table"></div>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN: PROFILE ═══════════════════════════ -->
+  <div class="screen" id="screen-profile">
+    <div class="prof-header">
+      <div class="prof-av" id="prof-av">?</div>
+      <div class="prof-name" id="prof-name">Гость</div>
+      <div class="prof-phone" id="prof-phone">Добавьте телефон</div>
+      <div class="prof-stats">
+        <div class="pstat"><div class="pv" id="my-ads-count">0</div><div class="pl">объявлений</div></div>
+        <div class="pstat"><div class="pv">—</div><div class="pl">рейтинг</div></div>
+        <div class="pstat"><div class="pv">5 ★</div><div class="pl">оценка</div></div>
+      </div>
+    </div>
+
+    <div class="scroll-body">
+      <!-- Editable profile -->
+      <div class="form-section">
+        <div class="form-section-title">Мой профиль</div>
+        <div class="form-row">
+          <div class="form-label">Имя</div>
+          <input class="form-input" id="p-name-in" type="text" placeholder="Ваше имя" oninput="saveProfile()">
+        </div>
+        <div class="form-row">
+          <div class="form-label">Телефон</div>
+          <input class="form-input" id="p-phone-in" type="tel" placeholder="+996 700 ..." oninput="saveProfile()">
+        </div>
+        <div class="form-row">
+          <div class="form-label">Район</div>
+          <select class="form-input" id="p-district" onchange="saveProfile()">
+            <option>Каракол</option><option>Ак-Суу</option><option>Тюп</option>
+            <option>Тон</option><option>Джети-Огуз</option>
+            <option>Балыкчы</option><option>Пржевальск</option><option>Другой</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="menu-section">
+        <div class="menu-item" onclick="showMyListings()">
+          <div class="menu-icon" style="background:var(--gl)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1" stroke="var(--g2)" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="var(--g2)" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="var(--g2)" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1" stroke="var(--g2)" stroke-width="2"/></svg>
+          </div>
+          <div>
+            <div class="menu-text">Мои объявления</div>
+            <div class="menu-sub" id="my-ads-sub">нет активных</div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="menu-arrow"><path d="M9 18l6-6-6-6" stroke="var(--mu)" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="menu-item" onclick="goTo('screen-chat')">
+          <div class="menu-icon" style="background:#deeefb">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#1a5fa0" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+          </div>
+          <div class="menu-text">Мои переписки</div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="menu-arrow"><path d="M9 18l6-6-6-6" stroke="var(--mu)" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="menu-item" onclick="goTo('screen-prices')">
+          <div class="menu-icon" style="background:var(--ab)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 20V10M12 20V4M6 20v-6" stroke="var(--ad)" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="menu-text">Цены рынка</div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="menu-arrow"><path d="M9 18l6-6-6-6" stroke="var(--mu)" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+
+      <div class="menu-section">
+        <div class="menu-item" onclick="showInstall()">
+          <div class="menu-icon" style="background:var(--gl)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 16l-4-4h3V4h2v8h3l-4 4z" fill="var(--g3)"/><path d="M4 18h16v2H4v-2z" fill="var(--g3)"/></svg>
+          </div>
+          <div>
+            <div class="menu-text">Установить на телефон</div>
+            <div class="menu-sub">добавить на главный экран</div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="menu-arrow"><path d="M9 18l6-6-6-6" stroke="var(--mu)" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="menu-item" onclick="shareApp()">
+          <div class="menu-icon" style="background:#deeefb">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="18" cy="5" r="3" stroke="#1a5fa0" stroke-width="2"/><circle cx="6" cy="12" r="3" stroke="#1a5fa0" stroke-width="2"/><circle cx="18" cy="19" r="3" stroke="#1a5fa0" stroke-width="2"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98" stroke="#1a5fa0" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="menu-text">Поделиться Малафо</div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="menu-arrow"><path d="M9 18l6-6-6-6" stroke="var(--mu)" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+
+      <div style="height:8px"></div>
+    </div>
+  </div>
+
+  <!-- ═══ BOTTOM NAV — SINGLE, OUTSIDE ALL SCREENS ══ -->
+  <!-- This is the KEY FIX: one nav for entire app, z-index 999 -->
+  <nav id="bnav">
+    <button class="ni on" id="nav-home" onclick="goTo('screen-main')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span>Главная</span>
+    </button>
+    <button class="ni" id="nav-chat" onclick="goTo('screen-chat')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <span>Чат</span>
+    </button>
+    <button class="ni-add" onclick="goTo('screen-camera')">
+      <div class="ni-add-btn pulse">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>
+      </div>
+      <span>Продать</span>
+    </button>
+    <button class="ni" id="nav-prices" onclick="goTo('screen-prices')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 20V10M12 20V4M6 20v-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span>Цены</span>
+    </button>
+    <button class="ni" id="nav-profile" onclick="goTo('screen-profile')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span>Профиль</span>
+    </button>
+  </nav>
+
+  <!-- ═══ INSTALL MODAL ══════════════════════════════ -->
+  <div class="modal-bg" id="install-modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal-box">
+      <h2>Установить Малафо</h2>
+      <div id="install-content"></div>
+    </div>
+  </div>
+
+  <!-- ═══ TOAST ═════════════════════════════════════ -->
+  <div id="toast">
+    <span style="color:var(--g5)">✓</span>
+    <span id="toast-msg"></span>
+  </div>
+
+</div><!-- #app -->
+
+<script src="guides.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

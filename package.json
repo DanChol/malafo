@@ -1,0 +1,6 @@
+{
+  "name": "malafo",
+  "version": "3.0.0",
+  "scripts": {"start": "serve . -p $PORT"},
+  "dependencies": {"serve": "^14.2.0"}
+}
